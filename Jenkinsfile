@@ -32,11 +32,22 @@ pipeline {
     stage('SonarCloud Analysis') {
       steps {
         container('maven') {
-          // Assuming you have the SonarCloud configuration in your pom.xml or you have the SONAR_TOKEN set up in Jenkins
-          sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ba6f0da07dd9380c7aaf144ef78be51cb2343258'
+          script {
+            // Trigger SonarCloud analysis and wait for the result
+            withSonarQubeEnv('YourSonarQubeEnvName') { // YourSonarQubeEnvName should be the name you gave your SonarQube server in Jenkins' configuration
+              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ba6f0da07dd9380c7aaf144ef78be51cb2343258'
+            }
+            // SonarQube Scanner step to check Quality Gate status
+            timeout(time: 1, unit: 'HOURS') { // Adjust the timeout to your needs
+              def qg = waitForQualityGate() // This method returns a QualityGate object
+              if (qg.status != 'OK') {
+                error "Quality Gate failed: ${qg.status}"
+              }
+            }
+          }
         }
       }
-    }    
+    }  
     stage('Package') {
       parallel {
         stage('Create Jarfile') {
