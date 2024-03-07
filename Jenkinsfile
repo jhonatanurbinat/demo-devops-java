@@ -39,8 +39,10 @@ pipeline {
             // }
             withCredentials([string(credentialsId: 'secretsonar', variable: 'SECRET_TEXT')]) {
               // Your pipeline steps where SECRET_TEXT is used
+              withSonarQubeEnv() {
               sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT}' 
-              }             
+              }
+            }             
             // SonarQube Scanner step to check Quality Gate status
           }
         }
