@@ -38,9 +38,20 @@ pipeline {
               sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ba6f0da07dd9380c7aaf144ef78be51cb2343258'
             }
             // SonarQube Scanner step to check Quality Gate status
+          }
+        }
+      }
+    }  
+    stage('Quality Gate') {
+      steps {
+        container('maven') {
+          script {
+            // Trigger SonarCloud analysis and wait for the result
+            // SonarQube Scanner step to check Quality Gate status
             timeout(time: 1, unit: 'HOURS') { // Adjust the timeout to your needs
               sleep(time:1, unit: 'MINUTES')
               def qg = waitForQualityGate() // This method returns a QualityGate object
+              println qg
               if (qg.status != 'OK') {
                 error "Quality Gate failed: ${qg.status}"
               }
@@ -48,7 +59,7 @@ pipeline {
           }
         }
       }
-    }  
+    }      
     stage('Package') {
       parallel {
         stage('Create Jarfile') {
