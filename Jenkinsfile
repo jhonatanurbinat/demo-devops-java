@@ -39,6 +39,7 @@ pipeline {
             }
             // SonarQube Scanner step to check Quality Gate status
             timeout(time: 1, unit: 'HOURS') { // Adjust the timeout to your needs
+              sleep(time:1, unit: 'MINUTES')
               def qg = waitForQualityGate() // This method returns a QualityGate object
               if (qg.status != 'OK') {
                 error "Quality Gate failed: ${qg.status}"
