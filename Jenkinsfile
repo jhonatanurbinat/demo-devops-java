@@ -23,7 +23,10 @@ pipeline {
         stage('Unit Tests') {
           steps {
             container('maven') {
-              sh 'mvn test'
+              //sh 'mvn test'
+              sh 'mvn clean test jacoco:report'
+          // Generate the XML report for SonarCloud (since SonarQube 7.9+ prefers XML format)
+              sh 'mvn jacoco:report-aggregate'
             }
           }
         }
@@ -40,7 +43,8 @@ pipeline {
             withCredentials([string(credentialsId: 'secretsonar', variable: 'SECRET_TEXT')]) {
               // Your pipeline steps where SECRET_TEXT is used
               withSonarQubeEnv() {
-              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT}' 
+              // sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT}' 
+              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT} -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco-aggregate/jacoco.xml'
               }
             }             
             // SonarQube Scanner step to check Quality Gate status
