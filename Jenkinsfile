@@ -34,9 +34,13 @@ pipeline {
         container('maven') {
           script {
             // Trigger SonarCloud analysis and wait for the result
-            withSonarQubeEnv() { // YourSonarQubeEnvName should be the name you gave your SonarQube server in Jenkins' configuration
-              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ba6f0da07dd9380c7aaf144ef78be51cb2343258'
-            }
+            // withSonarQubeEnv() { // YourSonarQubeEnvName should be the name you gave your SonarQube server in Jenkins' configuration
+            //  sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=ba6f0da07dd9380c7aaf144ef78be51cb2343258'
+            // }
+            withCredentials([string(credentialsId: 'secretsonar', variable: 'SECRET_TEXT')]) {
+              // Your pipeline steps where SECRET_TEXT is used
+              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT}' 
+              }             
             // SonarQube Scanner step to check Quality Gate status
           }
         }
