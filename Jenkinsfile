@@ -25,6 +25,7 @@ pipeline {
           set +x
           if ! command -v unzip &> /dev/null; then
             echo "Installing unzip..."
+            apk add unzip
             apt-get update && sudo apt-get install -y unzip
           fi
           echo "Installing AWS CLI v2..."          
