@@ -25,9 +25,9 @@ pipeline {
             container('maven') {
               //sh 'mvn test'
               sh 'mvn clean test site'
-              sh 'mvn clean test jacoco:report'
+              //sh 'mvn clean test jacoco:report'
           // Generate the XML report for SonarCloud (since SonarQube 7.9+ prefers XML format)
-              sh 'mvn jacoco:report-aggregate'
+              //sh 'mvn jacoco:report-aggregate'
             }
           }
         }
