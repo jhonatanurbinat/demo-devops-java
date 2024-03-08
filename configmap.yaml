@@ -1,0 +1,89 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: micro-devsu-config
+  namespace: default
+data:
+  APP_NAME: "micro-devsu" # Port number as a string
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micro-devsu
+  labels:
+    app: micro-devsu
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: micro-devsu
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: micro-devsu
+    spec:
+      containers:
+      - image: jhonatandev/devsu:latest
+        imagePullPolicy: Always
+        name: micro-devsu
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1024Mi"
+            cpu: "900m"
+        env: # Example of using ConfigMap value as an environment variable
+        - name: app_name_key
+          valueFrom:
+            configMapKeyRef:
+              name: micro-devsu-config
+              key: APP_NAME
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: micro-devsu-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: micro-devsu
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micro-devsu
+spec:
+  selector:
+    app: micro-devsu
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+
+
+  
