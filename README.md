@@ -12,6 +12,14 @@ http://104.155.187.220:32745/blue/organizations/jenkins/demo-devops-java/detail/
 ![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/fdb0ac64-68d7-4faa-86d1-4ef2feb1c03b)
 
 
+# JENKINS GKE HELM CHARTS
+
+Para jenkins se uso agentes en el mismo kubernetes - el Jenkins Controller es un pod de kubernetes en Google cloud Engine 
+
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/eeb1b06e-47ce-4db4-8a2b-f01fa32e8479)
+
+
+
 
 # Demo Devops Java
 
