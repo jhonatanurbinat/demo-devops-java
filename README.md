@@ -48,6 +48,9 @@ Se uso el template adjunto cloudformation1.yaml que permitio crear el bastion do
 
 
 
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/8631ac76-95f7-4e9c-acc8-09673cf69921)
+
+
 # Demo Devops Java
 
 This is a simple application to be used in the technical test of DevOps.
