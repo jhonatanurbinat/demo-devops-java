@@ -16,24 +16,37 @@ pipeline {
     AWS_REGION = 'us-east-1'
   }  
   stages {
+
+  stage('Setup AWS CLI') {
+      steps {
+        container('maven') {
+          // Install AWS CLI v2
+          sh '''
+          set +x
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          aws --version
+          '''
+        }
+      }
+    }
+    
     stage('Deploy to Dev') {
       steps {
-        script {
-          // Configure AWS CLI with the provided credentials
-          sh "aws configure set aws_access_key_id ${env.AWS_ACCESS_KEY_ID}"
-          sh "aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}"
-          sh "aws configure set region ${env.AWS_REGION}"
-
-          // Update kubeconfig for EKS
-          sh "aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}"
-
-          // Now you can use kubectl to interact with your EKS cluster
-          sh "kubectl get nodes"
-          
-          // Include your deployment commands here
-          // For example, to deploy a Kubernetes deployment
-          // sh "kubectl apply -f your-kubernetes-deployment-file.yaml"
-        }
+          container('maven') {
+           script {
+              // Assuming AWS credentials are configured via environment variables or IAM role
+              sh '''
+              aws configure set aws_access_key_id ${env.AWS_ACCESS_KEY_ID}
+              aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}
+              aws configure set region ${env.AWS_REGION}
+              aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}
+              // aws eks --region <region-code> update-kubeconfig --name <cluster-name>
+              kubectl get nodes
+              '''
+            }            
+          }  
       }
     }    
     stage('Build') {
