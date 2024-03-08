@@ -11,9 +11,13 @@ FROM openjdk:17-jdk-slim
 # Create a non-root user
 RUN groupadd -r appuser && useradd --no-log-init -r -g appuser appuser
 # Change to non-root user
-USER appuser
+
 # Set the working directory
 WORKDIR /app
+
+RUN chown -R appuser:appuser /app
+
+USER appuser
 # Copy the JAR file from the build stage
 COPY --from=build /app/target/*.jar /app/demo.jar
 # Expose the application port
