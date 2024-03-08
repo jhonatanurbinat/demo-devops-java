@@ -20,15 +20,12 @@ pipeline {
       steps {
           container('awscli') {
            script {
-              // Assuming AWS credentials are configured via environment variables or IAM role
-              sh '''
-              aws configure set aws_access_key_id ${env.AWS_ACCESS_KEY_ID}
-              aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}
-              aws configure set region ${env.AWS_REGION}
-              aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}
-              // aws eks --region <region-code> update-kubeconfig --name <cluster-name>
-              kubectl get nodes
-              '''
+              
+              sh 'aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}'
+              sh 'aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY'
+              sh 'aws configure set region ${env.AWS_REGION}' 
+              sh 'aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}' 
+              sh 'kubectl get nodes' 
             }            
           }  
       }
