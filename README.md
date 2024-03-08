@@ -16,7 +16,23 @@ http://104.155.187.220:32745/blue/organizations/jenkins/demo-devops-java/detail/
 
 Para jenkins se uso agentes en el mismo kubernetes - el Jenkins Controller es un pod de kubernetes en Google cloud Engine 
 
+   74  helm repo add bitnami https://charts.bitnami.com/bitnami
+   75  helm install my-nginx bitnami/nginx --version 15.14.0
+      97  helm install --namespace ci --values jenkins.value.yaml jenkins jenkins/jenkins
+
+Los agentes son dinamicos y usan la plantilla build-agent.yaml que tienen todo los contenedores utilitarios ( MAVEN , LICENSDFINDER , KANIKO )para hacer la compilacion 
+Se usa JACOCO plugin para el test coverage 
+
+coverage 27 por ciento y se creo un Quality gate si es menor 20 % el pipeline dara error 
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/b9774e42-534c-47ab-991d-a2bbc8354622)
+
+
+
 ![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/eeb1b06e-47ce-4db4-8a2b-f01fa32e8479)
+
+
+
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/36b0c721-9898-41a7-bcfc-5fabc0ab6d12)
 
 
 Para el EKS DE AWS 
