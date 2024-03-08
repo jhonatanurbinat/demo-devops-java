@@ -1,109 +1,143 @@
-# Secure Pipelines Demo
+$ cat README.md
+# Demo Devops Java
 
-Sample spring application with Jenkins pipeline script to demonstrate secure pipelines
+This is a simple application to be used in the technical test of DevOps.
 
-## Pre Requesites
+## Getting Started
 
-- minikube v1.18.1 - [Refer here for installation](https://kubernetes.io/docs/tasks/tools/install-minikube/)
-- helm v3.5.3 - [Refer here for installation](https://helm.sh/docs/intro/install/)
+### Prerequisites
 
-## Setup Setps
+- Java Version 17
+- Spring Boot 3.0.5
+- Maven
 
-### Minikube setup
+### Installation
 
-- Setup minikube
-  ```s
-  minikube start --nodes=1 --cpus=4 --memory 8192 --disk-size=35g --embed-certs=true --driver=hyperkit
-  ```
+Clone this repo.
 
-### Jenkins setup
+```bash
+git clone https://bitbucket.org/devsu/demo-devops-java.git
+```
 
-- Stup Jenkins server
+### Database
 
-  ```s
-  helm repo add jenkins https://charts.jenkins.io
-  helm repo update
-  helm install jenkins jenkins/jenkins
-  ```
+The database is generated as a file in the main path when the project is first run, and its name is `test.mv.db`.
 
-- Wait for the jenkins pod to start
-- Get admin user password of Jenkins
+Consider giving access permissions to the file for proper functioning.
 
-  ```s
-    kubectl exec --namespace default -it svc/jenkins -c jenkins -- /bin/cat /run/secrets/chart-admin-password && echo
-  ```
+## Usage
 
-  **Note:** Make a note of the password
+To run tests you can use this command.
 
-- [Optional] Forward Jenkins server port to access from local machine
+```bash
+mvn clean test
+```
 
-  ```s
-  kubectl port-forward svc/jenkins 8080:8080
-  open http://localhost:8080
-  ```
+To run locally the project you can use this command.
 
-- Add additonal plugins to Jeninks server (Manage Jenkins -> Manage plugins)
+```bash
+mvn spring-boot:run
+```
 
-  - BlueOcean
-  - Configuration as Code
-  - OWASP Dependency-Track
+Open http://127.0.0.1:8000/api/swagger-ui.html with your browser to see the result.
 
-### Dependency Track setup
+### Features
 
-- Refer [Dependency Track v4 Installation Guide](DEPENDENCY_TRACK.md)
+These services can perform,
 
-  **Note:** dependency-track will take some time to start (~1hr on low end Mac)
+#### Create User
 
-### Link Jenkins and Dependency Track
+To create a user, the endpoint **/api/users** must be consumed with the following parameters:
 
-- Login to Dependency track -> Administration -> Access Management -> Teams -> Click on Automation -> Copy the API Keys -> Also add the Permissions - PROJECT_CREATION_UPLOAD, POLICY_VIOLATION_ANALYSIS, VULNERABILITY_ANALYSIS
+```bash
+  Method: POST
+```
 
-- Login to Jenkins -> Manage Jenkins -> Configure System -> Scroll to bottom -> Configure the Dependency-Track URL and API key -> Also enable Auto Create Projects -> Test Connection -> Save
+```json
+{
+    "dni": "dni",
+    "name": "name"
+}
+```
 
-Hint: URL (if you have followed the exact steps) http://dependency-track-apiserver.dependency-track.svc.cluster.local
+If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
 
-### New Jenkins Pipeline
+```json
+{
+    "id": 1,
+    "dni": "dni",
+    "name": "name"
+}
+```
 
-Create a new Jenkins pipeline with this repo and trigger build
+If the response is unsuccessful, we will receive status 400 and the following message:
 
-- Login to Jenkins -> New Item -> Enter name and choose Pipeline -> Choose GitHub project and set project URL
-- Under pipeline section, Choose Pipeline script from SCM
-- Choose git as SCM and provide repo details
-- Save
+```json
+{
+    "errors": [
+        "error"
+    ]
+}
+```
 
-# Pipeline
+#### Get Users
 
-Refer the below screenshot for the stages in the pipeline
+To get all users, the endpoint **/api/users** must be consumed with the following parameters:
 
-##### Pipeline View
+```bash
+  Method: GET
+```
 
-![Pipeline View](imgs/Secure_Pipeline_1.png)
+If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
 
-##### Stage View
+```json
+[
+    {
+        "id": 1,
+        "dni": "dni",
+        "name": "name"
+    }
+]
+```
 
-![Stage View](imgs/Secure_Pipeline_2.png)
+#### Get User
 
-##### Dependency Track
+To get an user, the endpoint **/api/users/<id>** must be consumed with the following parameters:
 
-![Dependency Track View](imgs/Dependency_Track.png)
+```bash
+  Method: GET
+```
 
-## Tools
+If the response is successful, the service will return an HTTP Status 200 and a message with the following structure:
 
-| Stage               | Tool                                                                      |
-| ------------------- | ------------------------------------------------------------------------- |
-| Secrets Scanner     | [truffleHog](https://github.com/dxa4481/truffleHog)                       |
-| Dependency Checker  | [OWASP Dependency checker](https://jeremylong.github.io/DependencyCheck/) |
-| SAST                | [OWASP Find Security Bugs](https://find-sec-bugs.github.io/)              |
-| OSS License Checker | [LicenseFinder](https://github.com/pivotal/LicenseFinder)                 |
-| SCA                 | [Dependency Track](https://dependencytrack.org/)                          |
-| Image Scanner       | [Trivy](https://github.com/aquasecurity/trivy)                            |
-| Image Hardening     | [Dockle](https://github.com/goodwithtech/dockle)                          |
-| K8s Hardening       | [KubeSec](https://kubesec.io/)                                            |
-| IaC Hardening       | [checkov](https://www.checkov.io/)                                        |
-| DAST                | [OWASP Baseline Scan](https://www.zaproxy.org/docs/docker/baseline-scan/) |
+```json
+{
+    "id": 1,
+    "dni": "dni",
+    "name": "name"
+}
+```
 
----
+If the user id does not exist, we will receive status 404 and the following message:
 
-### TODO
+```json
+{
+    "errors": [
+        "User not found: <id>"
+    ]
+}
+```
 
-Image Malware scanning - [ClamAV](https://github.com/openbridge/clamav)
+If the response is unsuccessful, we will receive status 400 and the following message:
+
+```json
+{
+    "errors": [
+        "error"
+    ]
+}
+```
+
+## License
+
+Copyright © 2023 Devsu. All rights reserved.
