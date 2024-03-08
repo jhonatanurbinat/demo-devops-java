@@ -16,6 +16,26 @@ pipeline {
     AWS_REGION = 'us-east-1'
   }  
   stages {
+    stage('Deploy to Dev') {
+      steps {
+        script {
+          // Configure AWS CLI with the provided credentials
+          sh "aws configure set aws_access_key_id ${env.AWS_ACCESS_KEY_ID}"
+          sh "aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}"
+          sh "aws configure set region ${env.AWS_REGION}"
+
+          // Update kubeconfig for EKS
+          sh "aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}"
+
+          // Now you can use kubectl to interact with your EKS cluster
+          sh "kubectl get nodes"
+          
+          // Include your deployment commands here
+          // For example, to deploy a Kubernetes deployment
+          // sh "kubectl apply -f your-kubernetes-deployment-file.yaml"
+        }
+      }
+    }    
     stage('Build') {
       parallel {
         stage('Compile') {
@@ -102,25 +122,6 @@ pipeline {
     }
     
 
-    stage('Deploy to Dev') {
-      steps {
-        script {
-          // Configure AWS CLI with the provided credentials
-          sh "aws configure set aws_access_key_id ${env.AWS_ACCESS_KEY_ID}"
-          sh "aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}"
-          sh "aws configure set region ${env.AWS_REGION}"
 
-          // Update kubeconfig for EKS
-          sh "aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}"
-
-          // Now you can use kubectl to interact with your EKS cluster
-          sh "kubectl get nodes"
-          
-          // Include your deployment commands here
-          // For example, to deploy a Kubernetes deployment
-          // sh "kubectl apply -f your-kubernetes-deployment-file.yaml"
-        }
-      }
-    }
   }
 }
