@@ -45,7 +45,7 @@ pipeline {
               // Your pipeline steps where SECRET_TEXT is used
               withSonarQubeEnv() {
               // sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT}' 
-              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT} -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco-aggregate/jacoco.xml'
+              sh 'mvn sonar:sonar -Dsonar.projectKey=jhonatanurbinat_demo-devops-java -Dsonar.organization=jhonatanurbinat -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${SECRET_TEXT} -Dsonar.coverage.jacoco.xmlReportPaths=./**/jacoco.xml'
               }
             }             
             // SonarQube Scanner step to check Quality Gate status
