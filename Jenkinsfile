@@ -15,32 +15,10 @@ pipeline {
     // Specify your AWS Region
     AWS_REGION = 'us-east-1'
   }  
-  stages {
-
-  stage('Setup AWS CLI') {
-      steps {
-        container('maven') {
-          // Install AWS CLI v2
-          sh '''
-          set +x
-          if ! command -v unzip &> /dev/null; then
-            echo "Installing unzip..."
-            apk add unzip
-            apt-get update && sudo apt-get install -y unzip
-          fi
-          echo "Installing AWS CLI v2..."          
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          ./aws/install
-          aws --version
-          '''
-        }
-      }
-    }
-    
+  stages {   
     stage('Deploy to Dev') {
       steps {
-          container('maven') {
+          container('awscli') {
            script {
               // Assuming AWS credentials are configured via environment variables or IAM role
               sh '''
