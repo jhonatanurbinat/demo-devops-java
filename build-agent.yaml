@@ -47,6 +47,11 @@ spec:
       command:
         - cat
       tty: true
+    - name: awscli
+      image: amazon/aws-cli
+      command:
+        - cat
+      tty: true
   volumes:
     - name: m2
       hostPath:
