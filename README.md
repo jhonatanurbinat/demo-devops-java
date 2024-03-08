@@ -19,6 +19,17 @@ Para jenkins se uso agentes en el mismo kubernetes - el Jenkins Controller es un
 ![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/eeb1b06e-47ce-4db4-8a2b-f01fa32e8479)
 
 
+Para el EKS DE AWS 
+
+Se uso el template adjunto cloudformation1.yaml que permitio crear el bastion donde se creo el ek EKS con el comando eksctl que entrego la plantilla cloudformation2.json  que seria la segudna plantlla de EKS que se encuentra en el repositorio
+
+
+
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/a7f0945b-bf65-4e50-83d8-a41db33a2e7d)
+
+
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/492b18a9-d6bd-4316-85c3-c74bae156fbe)
+
 
 
 # Demo Devops Java
