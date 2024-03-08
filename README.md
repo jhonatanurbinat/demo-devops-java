@@ -1,4 +1,18 @@
-$ cat README.md
+Resolucion
+
+
+URL : http://aebeeeba7db6542dbbc278017000a5a7-61004271.us-east-1.elb.amazonaws.com/api/swagger-ui/index.html
+
+
+Jenkins URL  http://104.155.187.220:32745/login?from=%2F   
+
+Blue Ocean
+http://104.155.187.220:32745/blue/organizations/jenkins/demo-devops-java/detail/main/40/pipeline
+
+![image](https://github.com/jhonatanurbinat/demo-devops-java/assets/53740985/fdb0ac64-68d7-4faa-86d1-4ef2feb1c03b)
+
+
+
 # Demo Devops Java
 
 This is a simple application to be used in the technical test of DevOps.
