@@ -15,35 +15,7 @@ pipeline {
     // Specify your AWS Region
     AWS_REGION = 'us-east-1'
   }  
-  stages {   
-  stage('Checkout') {
-      steps {
-        script {
-           // The below will clone your repo and will be checked out to master branch by default.
-           git credentialsId: 'jenkins-user-github', url: 'https://github.com/jhonatanurbinat/demo-devops-java.git'
-           // Do a ls -lart to view all the files are cloned. It will be clonned. This is just for you to be sure about it.
-           //sh "ls -lart ./*" 
-           // List all branches in your repo. 
-           //sh "git branch -a"
-           // Checkout to a specific branch in your repo.
-           //sh "git checkout branchname"
-          }
-       }
-    }
-    stage('Deploy to Dev') {
-      steps {
-          container('awscli') {
-           script {
-              
-              sh 'aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}'
-              sh 'aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}'
-              sh 'aws configure set region ${env.AWS_REGION}' 
-              sh 'aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}' 
-              sh 'kubectl get nodes' 
-            }            
-          }  
-      }
-    }    
+  stages {     
     stage('Build') {
       parallel {
         stage('Compile') {
@@ -90,7 +62,7 @@ pipeline {
         }
       }
     }  
-    stage('Quality Gate') {
+    stage('Quality Gate Jacoco Coverage validation') {
       steps {
         container('maven') {
           script {
@@ -128,8 +100,22 @@ pipeline {
         }        
       }
     }
-    
 
+stage('Deploy to Prod') {
+      steps {
+          container('awscli') {
+           script {
+              
+              sh 'aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}'
+              sh 'aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}'
+              sh 'aws configure set region ${env.AWS_REGION}' 
+              sh 'aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}' 
+              sh 'kubectl get nodes' 
+              sh 'kubectl apply -f manifest.yaml' 
+            }            
+          }  
+      }
+    }  
 
   }
 }
