@@ -107,10 +107,11 @@ stage('Deploy to Prod') {
            script {
               
               sh 'aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}'
-              sh 'aws configure set aws_secret_access_key ${env.AWS_SECRET_ACCESS_KEY}'
-              sh 'aws configure set region ${env.AWS_REGION}' 
-              sh 'aws eks update-kubeconfig --name ${env.EKS_CLUSTER_NAME} --region ${env.AWS_REGION}' 
+              sh 'aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}'
+              sh 'aws configure set region ${AWS_REGION}' 
+              sh 'aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}' 
               sh 'kubectl get nodes' 
+              sh 'ls -la' 
               sh 'kubectl apply -f manifest.yaml' 
             }            
           }  
