@@ -14,6 +14,7 @@ pipeline {
     EKS_CLUSTER_NAME = 'dev-cluster-2'
     // Specify your AWS Region
     AWS_REGION = 'us-east-1'
+    NVD_API_KEY = credentials('nvdApiKey')
   }  
   stages {     
     stage('Build') {
@@ -46,7 +47,7 @@ pipeline {
         steps {
         container('maven') {
         catchError(buildResult: 'SUCCESS', stageResult:'FAILURE') {
-            sh 'mvn org.owasp:dependency-check-maven:check'
+            sh 'mvn org.owasp:dependency-check-maven:check -DnvdApiKey=${NVD_API_KEY} '
           }
             }
         }
